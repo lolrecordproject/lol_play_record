@@ -17,7 +17,8 @@ public class ItemController {
     }
 
     @PostMapping("items")
-    public void save(@RequestBody ItemDto itemDto) {
+    public void save(ItemDto itemDto) {
+        System.out.println(itemDto.toString());
         itemService.saveItem(itemDto);
     }
 

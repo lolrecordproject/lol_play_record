@@ -21,8 +21,8 @@ public class MemoryItemRepository implements ItemRepository{
     }
 
     @Override
-    public Item findById(Long id) {
-        return store.get(id); // id에 해당하는 item을 찾아서 반환
+    public Item findById(Long num) {
+        return store.get(num); // id에 해당하는 item을 찾아서 반환
     }
 
     @Override
@@ -31,12 +31,12 @@ public class MemoryItemRepository implements ItemRepository{
     }
 
     @Override
-    public void updateById(Long id, Item item) {
-        store.put(id, item); // store에 저장, hash map은 key가 같으면 덮어씌워지기 때문에 id는 그대로 두고 내용만 수정
+    public void updateById(Long num, Item item) {
+        store.put(num, item); // store에 저장, hash map은 key가 같으면 덮어씌워지기 때문에 id는 그대로 두고 내용만 수정
     }
 
     @Override
-    public void deleteById(Long id) {
-        store.remove(id); // id에 해당하는 item을 찾아서 삭제
+    public void deleteById(Long num) {
+        store.remove(num); // id에 해당하는 item을 찾아서 삭제
     }
 }
