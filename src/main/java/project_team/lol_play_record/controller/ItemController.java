@@ -17,13 +17,14 @@ public class ItemController {
     }
 
     @PostMapping("items")
-    public void save(@RequestBody ItemDto itemDto) {
+    public void save(ItemDto itemDto) {
+        System.out.println(itemDto.toString());
         itemService.saveItem(itemDto);
     }
 
-    @GetMapping("items/{id}")
-    public ItemDto findItemById(@PathVariable("id") Long id) {
-        return itemService.findItemById(id);
+    @GetMapping("items/{name}")
+    public ItemDto findItemByName(@PathVariable("name") String name) {
+        return itemService.findItemByName(name);
     }
 
     @GetMapping("items/list")
@@ -31,13 +32,13 @@ public class ItemController {
         return itemService.findAllItem();
     }
 
-    @PatchMapping("items/{id}")
-    public void updateItemById(@PathVariable("id") Long id, @RequestBody ItemDto itemDto) {
-        itemService.updateItemById(id, itemDto);
-    }
+//    @PatchMapping("items/{name}")
+//    public void updateItemByName(@PathVariable("id") String name, @RequestBody ItemDto itemDto) {
+//        itemService.updateItemByName(name, itemDto);
+//    }
 
-    @DeleteMapping("items/{id}")
-    public void deleteItemById(@PathVariable("id") Long id) {
-        itemService.deleteItemById(id);
+    @DeleteMapping("items/{name}")
+    public void deleteItemByName(@PathVariable("name") String name) {
+        itemService.deleteItemByName(name);
     }
 }

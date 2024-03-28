@@ -21,6 +21,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok' //롬북 플러그인 설치하기
+	implementation group: 'org.json', name: 'json', version: '20200518'
 	//implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
 	//몽고디비 사용시 추가하기
 }
