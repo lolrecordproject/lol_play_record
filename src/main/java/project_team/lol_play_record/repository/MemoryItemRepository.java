@@ -17,8 +17,7 @@ public class MemoryItemRepository implements ItemRepository{
 
     @Override
     public void save(Item item) {
-        item.setId(++sequence); // id를 생성하고 item에 저장
-        store.put(item.getId(), item); // store에 저장
+        store.put(++sequence, item); // store에 저장
     }
 
     @Override
