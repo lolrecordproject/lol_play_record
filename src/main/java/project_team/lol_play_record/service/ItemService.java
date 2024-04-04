@@ -1,5 +1,6 @@
 package project_team.lol_play_record.service;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -16,7 +17,12 @@ import project_team.lol_play_record.domain.Item;
 import project_team.lol_play_record.dto.ItemDto;
 import project_team.lol_play_record.repository.ItemRepository;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 @Service
@@ -74,7 +80,7 @@ public class ItemService {
             if (response.getBody().getId() != null){
                 item.setSummonerLevel(response.getBody().getSummonerLevel());
                 item.setRevisionDate(response.getBody().getRevisionDate());
-//                item.setPuuid(response.getBody().getPuuid());
+                item.setPuuid(response.getBody().getPuuid());
                 item.setId(response.getBody().getId());
                 item.setProfileIconId(response.getBody().getProfileIconId());
                 item.setAccountId(response.getBody().getAccountId());
@@ -129,5 +135,22 @@ public class ItemService {
     public void deleteItemByName(String name) {
         itemRepository.deleteByName(name); // itemRepository를 통해 id에 해당하는 item을 찾아서 삭제
     }
+
+    public byte[] findProfileByName(String name) throws IOException {
+        Item item = itemRepository.findByName(name);
+
+
+        String IconUrl = "https://ddragon.leagueoflegends.com/cdn/10.6.1/img/profileicon/" + item.getProfileIconId() + ".png";
+
+//        String path = IconUrl.orElseThrow(() -> new IllegalArgumentException("Not Found"))
+//                .getPath();
+        InputStream imageStream = new URL(IconUrl).openStream();
+        byte[] image = IOUtils.toByteArray(imageStream);
+        imageStream.close();
+
+        return image;
+    }
+
+
 
 }
