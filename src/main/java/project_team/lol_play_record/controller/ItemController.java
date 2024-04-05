@@ -5,10 +5,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project_team.lol_play_record.dto.ItemDto;
+import project_team.lol_play_record.dto.MatchDto;
+import project_team.lol_play_record.dto.MatchGameDto;
 import project_team.lol_play_record.service.ItemService;
-import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -34,14 +35,7 @@ public class ItemController {
     @GetMapping(value = "items/profile/{name}",
             produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> profile(@PathVariable("name") String name) throws IOException {
-
-//        String url = itemService.findProfileByName(name);
-//        System.out.println(url);
-//        InputStream in = getClass().getResourceAsStream(url);
-//        return IOUtils.toByteArray(in); //아파치 의존성 추가해야 해결됨
-
         byte[] res = itemService.findProfileByName(name);
-
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -69,5 +63,17 @@ public class ItemController {
     @DeleteMapping("items/{name}")
     public void deleteItemByName(@PathVariable("name") String name) {
         itemService.deleteItemByName(name);
+    }
+
+    @GetMapping("matchGame/{name}")
+    public List<MatchGameDto.ParticipantDto> findMatchGameByName(@PathVariable("name") String name){
+        List matchplaylist = itemService.findMatchGameByName(name);
+        return matchplaylist;
+    }
+
+    @GetMapping("matches/{matchid}")
+    public List<MatchDto.ParticipantDto> findMatchGameByMatchId(@PathVariable("matchid") String matchId){
+        List<MatchDto.ParticipantDto> matchessummonerlist = itemService.findMatchGameByMatchId(matchId);
+        return matchessummonerlist;
     }
 }

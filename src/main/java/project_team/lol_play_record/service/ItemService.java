@@ -6,19 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import project_team.lol_play_record.domain.Item;
 import project_team.lol_play_record.dto.ItemDto;
+import project_team.lol_play_record.dto.MatchDto;
+import project_team.lol_play_record.dto.MatchGameDto;
 import project_team.lol_play_record.repository.ItemRepository;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -138,12 +135,7 @@ public class ItemService {
 
     public byte[] findProfileByName(String name) throws IOException {
         Item item = itemRepository.findByName(name);
-
-
         String IconUrl = "https://ddragon.leagueoflegends.com/cdn/10.6.1/img/profileicon/" + item.getProfileIconId() + ".png";
-
-//        String path = IconUrl.orElseThrow(() -> new IllegalArgumentException("Not Found"))
-//                .getPath();
         InputStream imageStream = new URL(IconUrl).openStream();
         byte[] image = IOUtils.toByteArray(imageStream);
         imageStream.close();
@@ -151,6 +143,98 @@ public class ItemService {
         return image;
     }
 
+    public List<MatchGameDto.ParticipantDto> findMatchGameByName(String name){
+        Item item = itemRepository.findByName(name);
+//        String active_gameUrl = "https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner";
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://kr.api.riotgames.com")
+                .path("/lol/spectator/v5/active-games/by-summoner/" + item.getPuuid())
+                .queryParam("api_key",mykey)
+                .build()
+                .encode()
+                .toUri();
+
+        logger.info("uri : {}", uri);
+        try {
+            // RestTemplate 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Request Header 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Request Body 설정
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("key", "value");
+
+            // Request Entity 생성
+            HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
+            ResponseEntity<MatchGameDto> response = restTemplate.getForEntity(uri, MatchGameDto.class);
+//            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
+
+            // Response Body 출력
+            System.out.println(response.getBody());
+            logger.info("response body : {}",response.getBody());
+            if (response.getBody().getGameType() != null){
+                System.out.println(response.getBody().getParticipants());
+                return response.getBody().getParticipants();
+            }
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<MatchDto.ParticipantDto> findMatchGameByMatchId(String matchId){
+
+
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://asia.api.riotgames.com")
+                .path("/lol/match/v5/matches/" + matchId)
+                .queryParam("api_key",mykey)
+                .build()
+                .encode()
+                .toUri();
+
+        logger.info("uri : {}", uri);
+        try {
+            // RestTemplate 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Request Header 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Request Body 설정
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("key", "value");
+
+            // Request Entity 생성
+            HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
+            System.out.println(1111);
+            ResponseEntity<MatchDto> response = restTemplate.getForEntity(uri, MatchDto.class);
+//            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
+
+
+
+            // Response Body 출력
+            System.out.println(response.getBody());
+            logger.info("response body : {}",response.getBody());
+            if (response.getBody() != null){
+                logger.info("infodto : {}", response.getBody().getInfo());
+                logger.info("participants : {}", response.getBody().getInfo().participants);
+
+                return response.getBody().getInfo().participants;
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }
