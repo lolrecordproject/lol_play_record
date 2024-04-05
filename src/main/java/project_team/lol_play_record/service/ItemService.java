@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @PropertySource(ignoreResourceNotFound = false, value = "classpath:riotApiKey.properties")
@@ -187,6 +188,40 @@ public class ItemService {
         return null;
     }
 
+    public String getSpellnameBySpellId(int spellid){
+        switch (spellid){
+            case 21: return "SummonerBarrier";
+            case 1: return "SummonerBoost";
+            case 2022: return "SummonerCherryFlash";
+            case 2021: return "SummonerCherryHold";
+            case 14: return "SummonerDot";
+            case 3: return "SummonerExhaust";
+            case 4: return "SummonerFlash";
+            case 6: return "SummonerHaste";
+            case 7: return "SummonerHeal";
+            case 13: return "SummonerMana";
+            case 30: return "SummonerPoroRecall";
+            case 31: return "SummonerPoroThrow";
+            case 11: return "SummonerSmite";
+            case 39: return "SummonerSnowURFSnowball_Mark";
+            case 32: return "SummonerSnowball";
+            case 12: return "SummonerTeleport";
+            case 54: return "Summoner_UltBookPlaceholder";
+            case 55: return "Summoner_UltBookSmitePlaceholder";
+            default: return null;
+        }
+
+    }
+
+    public String getItemnameByItemid(int itemId){
+        if(itemId != 0){
+            return "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/" + "item/" + itemId + ".png";
+        }
+        else{
+            return null;
+        }
+    }
+
     public List<MatchDto.ParticipantDto> findMatchGameByMatchId(String matchId){
 
 
@@ -226,6 +261,41 @@ public class ItemService {
             if (response.getBody() != null){
                 logger.info("infodto : {}", response.getBody().getInfo());
                 logger.info("participants : {}", response.getBody().getInfo().participants);
+
+                String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/";
+
+
+
+                for(int i = 0; i<10; i++){
+                    response.getBody().getInfo().participants.get(i).championUrl
+                            = imageUrl + "champion/" + response.getBody().getInfo().participants.get(i).championName + ".png";
+
+                    String spell1Name = getSpellnameBySpellId(response.getBody().getInfo().participants.get(i).summoner1Id);
+                    String spell2Name = getSpellnameBySpellId(response.getBody().getInfo().participants.get(i).summoner2Id);;
+                    if(spell1Name != null){
+                        response.getBody().getInfo().participants.get(i).spell1Url
+                                = imageUrl + "spell/" + spell1Name + ".png";
+                    }
+                    if(spell2Name != null){
+                        response.getBody().getInfo().participants.get(i).spell2Url
+                                = imageUrl + "spell/" + spell2Name + ".png";
+                    }
+
+                    response.getBody().getInfo().participants.get(i).item0Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item0);
+                    response.getBody().getInfo().participants.get(i).item1Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item1);
+                    response.getBody().getInfo().participants.get(i).item2Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item2);
+                    response.getBody().getInfo().participants.get(i).item3Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item3);
+                    response.getBody().getInfo().participants.get(i).item4Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item4);
+                    response.getBody().getInfo().participants.get(i).item5Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item5);
+                    response.getBody().getInfo().participants.get(i).item6Url
+                            = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item6);
+                }
 
                 return response.getBody().getInfo().participants;
             }

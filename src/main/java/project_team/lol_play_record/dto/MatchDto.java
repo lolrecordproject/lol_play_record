@@ -51,7 +51,19 @@ public class MatchDto {
         public String summonerName;
         public String riotIdName;
         public String teamPosition;
+        public String role;
         public boolean win;
+
+        public String championUrl;
+        public String spell1Url;
+        public String spell2Url;
+        public String item0Url;
+        public String item1Url;
+        public String item2Url;
+        public String item3Url;
+        public String item4Url;
+        public String item5Url;
+        public String item6Url;
     }
 
     @Data
