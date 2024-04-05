@@ -34,6 +34,8 @@ public class MatchDto {
         public int teamId;
         public int championId;
         public String championName;
+        public int summoner1Id;
+        public int summoner2Id;
         public int kills;
         public int assists;
         public int deaths;
